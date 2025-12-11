@@ -11,6 +11,7 @@ const OrderSummary = ({
   total,
   specialRequest,
   setSpecialRequest,
+  onSplitBill
 }) => {
   return (
     <div className="summary-wrapper">
@@ -35,8 +36,9 @@ const OrderSummary = ({
       />
 
       <PriceBreakdown subtotal={subtotal} discount={discount} total={total} />
+      <SummaryActions onSplitBill={onSplitBill} />
 
-      <SummaryActions />
+   
     </div>
   );
 };
