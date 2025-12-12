@@ -1,0 +1,39 @@
+.sidebar {
+  width: 220px;
+  background: #ffffff;
+  border-right: 1px solid #e2e2e2;
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.side-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: none;
+  font-size: 17px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.side-btn:hover {
+  background: #f3f7ff;
+}
+
+.side-btn.active {
+  background: #e8f1ff;
+  color: #0064ff;
+  font-weight: 600;
+}
