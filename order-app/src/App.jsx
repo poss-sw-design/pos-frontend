@@ -14,21 +14,25 @@ import ManageDashboard from "./modules/manage/pages/ManageDashboard";
 import DiscountDashboard from "./modules/manage/discount/DiscountDashboard";
 import DiscountForm from "./modules/manage/discount/DiscountForm";
 
-// NEW: Manage Menu
+// Manage Menu
 import ManageMenu from "./modules/manage/product/ManageMenu";
+
+// Tax
+import TaxDashboard from "./modules/manage/tax/TaxDashboard";
+import ManageUsers from "./modules/manage/user/ManageUsers";
 
 function App() {
   const [screen, setScreen] = useState("order");
 
-  // 예약 (Booking)
+  // BOOKINGS
   const [bookings, setBookings] = useState([]);
   const [editingBooking, setEditingBooking] = useState(null);
 
-  // Discounts
+  // DISCOUNTS
   const [discounts, setDiscounts] = useState([]);
   const [editingDiscount, setEditingDiscount] = useState(null);
 
-  // Menu Categories & Products
+  // MENU CATEGORIES & PRODUCTS
   const [menuCategories, setMenuCategories] = useState([
     { id: 1, name: "Coffee" },
     { id: 2, name: "Tea" },
@@ -41,32 +45,80 @@ function App() {
     { id: 201, categoryId: 2, name: "Earl Grey", price: 3.0 },
   ]);
 
+  // TAX RULES
+  const [taxes, setTaxes] = useState([
+    {
+      id: 1,
+      name: "Food Tax",
+      rate: 10,
+      categoryId: 1,
+      description: "Applies to all food items",
+      status: "active",
+    },
+    {
+      id: 2,
+      name: "Beverage Tax",
+      rate: 12,
+      categoryId: 2,
+      description: "Beverages category",
+      status: "active",
+    },
+  ]);
+
   /** DISCOUNT HANDLERS **/
-  const addDiscount = (discount) => setDiscounts((prev) => [...prev, discount]);
-  const updateDiscount = (updated) =>
-    setDiscounts((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+  const addDiscount = (d) => setDiscounts(prev => [...prev, d]);
+  const updateDiscount = (d) =>
+    setDiscounts(prev => prev.map(x => x.id === d.id ? d : x));
   const deleteDiscount = (id) =>
-    setDiscounts((prev) => prev.filter((d) => d.id !== id));
+    setDiscounts(prev => prev.filter(x => x.id !== id));
 
   /** BOOKING **/
-  const cancelBooking = (id) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status: "cancelled" } : b))
+  const cancelBooking = (id) =>
+    setBookings(prev =>
+      prev.map(b => (b.id === id ? { ...b, status: "cancelled" } : b))
     );
-  };
 
-  const handleBookingConfirm = (bookingData) => {
-    console.log("Booking saved:", bookingData);
-    setBookings((prev) => [...prev, { id: Date.now(), ...bookingData }]);
+  const handleBookingConfirm = (data) => {
+    setBookings(prev => [...prev, { id: Date.now(), ...data }]);
     setScreen("reservation-list");
   };
 
-  const handleBookingUpdate = (updatedBooking) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === updatedBooking.id ? updatedBooking : b))
+  const handleBookingUpdate = (updated) => {
+    setBookings(prev =>
+      prev.map(b => (b.id === updated.id ? updated : b))
     );
     setScreen("reservation-list");
   };
+
+  // USERS (User Management)
+const [users, setUsers] = useState([
+  {
+    id: 1,
+    name: "Robert Johnson",
+    email: "robert@example.com",
+    phone: "(555) 123-4567",
+    role: "Employee",          // Employee | Manager | SuperAdmin
+    status: "active",          // active | inactive
+  },
+  {
+    id: 2,
+    name: "Emily Davis",
+    email: "emily@example.com",
+    phone: "(555) 987-6543",
+    role: "Manager",
+    status: "active",
+  },
+  {
+    id: 3,
+    name: "James Brown",
+    email: "james@example.com",
+    phone: "(555) 456-7890",
+    role: "Employee",
+    status: "inactive",
+  },
+]);
+
+
 
   return (
     <MainLayout
@@ -86,6 +138,7 @@ function App() {
           discounts={discounts}
           categories={menuCategories}
           products={menuItems}
+          taxes={taxes}               
         />
       )}
 
@@ -129,8 +182,9 @@ function App() {
         <ManageDashboard
           onBack={() => setScreen("order")}
           goDiscount={() => setScreen("discount")}
-          goMenu={() => setScreen("menu")}  // ← HERE
+          goMenu={() => setScreen("menu")}
           goTax={() => setScreen("tax")}
+          goUsers={() => setScreen("users")}
         />
       )}
 
@@ -151,8 +205,8 @@ function App() {
       {screen === "discount-create" && (
         <DiscountForm
           onBack={() => setScreen("discount")}
-          onSave={(newDiscount) => {
-            addDiscount(newDiscount);
+          onSave={(d) => {
+            addDiscount(d);
             setScreen("discount");
           }}
         />
@@ -162,8 +216,8 @@ function App() {
         <DiscountForm
           editing={editingDiscount}
           onBack={() => setScreen("discount")}
-          onSave={(updated) => {
-            updateDiscount(updated);
+          onSave={(d) => {
+            updateDiscount(d);
             setScreen("discount");
           }}
         />
@@ -173,32 +227,57 @@ function App() {
       {screen === "menu" && (
         <ManageMenu
           onBack={() => setScreen("manage")}
-
           categories={menuCategories}
           products={menuItems}
-
-          onAddCategory={(c) => setMenuCategories((prev) => [...prev, c])}
+          onAddCategory={(c) => setMenuCategories(prev => [...prev, c])}
           onUpdateCategory={(c) =>
-            setMenuCategories((prev) =>
-              prev.map((x) => (x.id === c.id ? c : x))
+            setMenuCategories(prev =>
+              prev.map(x => (x.id === c.id ? c : x))
             )
           }
           onDeleteCategory={(id) => {
-            setMenuCategories((prev) => prev.filter((x) => x.id !== id));
-            setMenuItems((prev) => prev.filter((p) => p.categoryId !== id));
+            setMenuCategories(prev => prev.filter(x => x.id !== id));
+            setMenuItems(prev => prev.filter(p => p.categoryId !== id));
           }}
-
-          onAddProduct={(p) => setMenuItems((prev) => [...prev, p])}
+          onAddProduct={(p) => setMenuItems(prev => [...prev, p])}
           onUpdateProduct={(p) =>
-            setMenuItems((prev) =>
-              prev.map((x) => (x.id === p.id ? p : x))
+            setMenuItems(prev =>
+              prev.map(x => (x.id === p.id ? p : x))
             )
           }
           onDeleteProduct={(id) =>
-            setMenuItems((prev) => prev.filter((x) => x.id !== id))
+            setMenuItems(prev => prev.filter(x => x.id !== id))
           }
         />
       )}
+
+      {/* TAX MANAGEMENT */}
+      {screen === "tax" && (
+        <TaxDashboard
+          taxes={taxes}
+          categories={menuCategories}     
+          onAdd={(t) => setTaxes(prev => [...prev, t])}
+          onUpdate={(t) =>
+            setTaxes(prev => prev.map(x => (x.id === t.id ? t : x)))
+          }
+          onDelete={(id) =>
+            setTaxes(prev => prev.filter(x => x.id !== id))
+          }
+          onBack={() => setScreen("manage")}
+        />
+      )}
+
+      {screen === "users" && (
+  <ManageUsers
+    users={users}
+    onBack={() => setScreen("manage")}
+    onAdd={(user) => setUsers(prev => [...prev, user])}
+    onUpdate={(u) => setUsers(prev => prev.map(x => x.id === u.id ? u : x))}
+    onDelete={(id) => setUsers(prev => prev.map(x => x.id === id ? { ...x, active:false } : x))}
+  />
+)}
+
+
     </MainLayout>
   );
 }
