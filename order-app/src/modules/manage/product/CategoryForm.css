@@ -1,0 +1,132 @@
+/* 모달 배경 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+/* 모달 박스 */
+.category-modal {
+  width: 480px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* FORM INPUTS */
+.form-label {
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f8f8fc;
+  margin-bottom: 10px;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  min-height: 70px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f8f8fc;
+  resize: none;
+}
+
+/* INGREDIENT SECTION */
+.ingredient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.add-ingredient-btn {
+  background: #6c4df6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ingredient-list {
+  border: 1px solid #ddd;
+  background: #fafafa;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.ingredient-item {
+  display: grid;
+  grid-template-columns: 1fr 80px 32px;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.remove-btn {
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FOOTER BUTTONS */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.cancel-btn {
+  padding: 8px 14px;
+  background: #ececec;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn {
+  padding: 8px 14px;
+  background: #6c4df6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

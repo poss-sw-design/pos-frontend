@@ -1,0 +1,125 @@
+/* 전체 페이지 */
+.manage-wrapper {
+  padding: 24px;
+  width: 100%;
+  background: #f7f7fb;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Back button */
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #444;
+  cursor: pointer;
+}
+
+/* 카드 레이아웃 */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* 카드 헤더 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* 작고 예쁜 Add 버튼 */
+.add-btn-small {
+  background: #6c4df6;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 테이블 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 8px;
+  color: #666;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+
+.table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 배지 스타일 */
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-green {
+  background: #e4f8e6;
+  color: #2a7a33;
+}
+
+.badge-purple {
+  background: #f2e9ff;
+  color: #6c4df6;
+}
+
+/* 액션 아이콘 */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 모달 (기존 유지) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  width: 420px;
+  padding: 24px;
+  border-radius: 12px;
+}

@@ -1,0 +1,118 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.product-modal {
+  width: 480px;
+  max-height: 95vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* LABEL + INPUT */
+.form-label {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f5f5fc;
+  border: 1px solid #ddd;
+}
+
+/* TEXTAREA */
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  background: #f5f5fc;
+  border-radius: 8px;
+  min-height: 80px;
+  border: 1px solid #ddd;
+}
+
+/* INGREDIENT TAGS */
+.selected-tags {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: #e6ddff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+/* INGREDIENT CHECKBOXES */
+.ingredient-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ingredient-option {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.ingredient-option.active {
+  background: #6c4df6;
+  color: white;
+  border-color: #6c4df6;
+}
+
+/* FOOTER BUTTONS */
+.modal-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-btn {
+  background: #eee;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #6c4df6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}

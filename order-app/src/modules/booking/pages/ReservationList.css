@@ -1,0 +1,105 @@
+.reservation-container {
+  padding: 30px;
+  font-family: "Inter", sans-serif;
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-btn {
+  padding: 6px 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.reservation-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+.reservation-table th {
+  text-align: left;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 14px;
+  padding-bottom: 8px;
+}
+
+.reservation-table tr {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.reservation-table td {
+  padding: 16px 12px;
+  vertical-align: middle;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.customer-info,
+.employee-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-photo,
+.employee-photo {
+  width: 36px;
+  height: 36px;
+  background: #e5e7eb;
+  border-radius: 50%;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.phone,
+.mini-text {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.reservation-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.nav-buttons button {
+  padding: 6px 14px;
+  margin-left: 8px;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

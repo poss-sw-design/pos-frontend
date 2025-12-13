@@ -1,0 +1,36 @@
+.discount-dashboard {
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-btn {
+  background: #0064ff;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.discount-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.discount-table th,
+.discount-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}

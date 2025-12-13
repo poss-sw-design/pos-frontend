@@ -1,0 +1,25 @@
+.booking-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm-btn {
+  background: #0064ff;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.confirm-btn:hover {
+  background: #0053d1;
+}
+
+.confirm-btn:disabled {
+  background: #bfcbe0;
+  cursor: not-allowed;
+}

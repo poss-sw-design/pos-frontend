@@ -35,7 +35,11 @@ const OrderSummary = ({
         setSpecialRequest={setSpecialRequest}
       />
 
-      <PriceBreakdown subtotal={subtotal} discount={discount} total={total} />
+<PriceBreakdown 
+  subtotal={subtotal}
+  discount={discount} 
+  total={total}
+/>
       <SummaryActions onSplitBill={onSplitBill} />
 
    

@@ -1,0 +1,42 @@
+.booking-dashboard {
+  padding: 40px;
+  font-family: Inter, sans-serif;
+}
+
+.back-btn {
+  border: none;
+  background: none;
+  color: #0064ff;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.booking-dashboard h1 {
+  font-size: 26px;
+  margin-bottom: 25px;
+}
+
+.booking-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.big-btn {
+  width: 260px;
+  padding: 18px;
+  border: none;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.big-btn:hover {
+  background: #f6faff;
+  border-color: #0064ff;
+}

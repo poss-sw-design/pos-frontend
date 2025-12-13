@@ -1,0 +1,294 @@
+/* 전체 컨테이너 */
+.booking-container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 24px 32px;
+  background: #f5f6fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #222;
+}
+
+/* 상단 Back 버튼 (작게) */
+.booking-container .back-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #d3d3d3;
+  color: #333;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.booking-container .back-btn:hover {
+  background: #c5c5c5;
+}
+
+.booking-container h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 공통 섹션 박스 */
+.section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  border: 1px solid #e3e4ea;
+}
+
+.section h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+/* CustomerInfo 폼 그리드 */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 12px 16px;
+}
+
+.form-grid input[type="email"] {
+  grid-column: 1 / span 2;
+}
+
+.form-grid input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d0d3dd;
+  font-size: 14px;
+}
+
+.form-grid input:focus {
+  outline: none;
+  border-color: #0064ff;
+  box-shadow: 0 0 0 2px rgba(0, 100, 255, 0.15);
+}
+
+/* 공통 선택 카드 그리드 */
+.selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 서비스 카드 */
+.selector-card {
+  background: #fafbff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid #dde0ed;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.selector-card h3 {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.selector-card p {
+  font-size: 13px;
+  color: #666;
+  margin: 2px 0;
+}
+
+.selector-card.selected {
+  border-color: #0064ff;
+  background: #e7f0ff;
+  box-shadow: 0 0 0 2px rgba(0, 100, 255, 0.15);
+}
+
+/* 직원 카드 */
+.employee-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.employee-card {
+  background: #fbfbfd;
+  border-radius: 10px;
+  padding: 14px 10px;
+  border: 1px solid #e1e3ef;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.employee-card .photo-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  margin: 0 auto 8px;
+  background: #e3e7f5;
+}
+
+.employee-card h3 {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.employee-card p {
+  font-size: 12px;
+  color: #777;
+}
+
+.employee-card.selected {
+  border-color: #0064ff;
+  background: #e7f0ff;
+  box-shadow: 0 0 0 2px rgba(0, 100, 255, 0.15);
+}
+
+/* 날짜 + 시간 영역 가로 배치 */
+.date-time-section {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* DateSelector */
+.date-selector,
+.time-selector {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid #e3e4ea;
+}
+
+.date-selector h3,
+.time-selector h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* 간단 날짜 리스트 버튼들 */
+.date-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.date-btn {
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d7d9e5;
+  background: #f9fafc;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.date-btn.selected {
+  border-color: #0064ff;
+  background: #e7f1ff;
+}
+
+/* 시간 선택 버튼 */
+.time-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.time-btn {
+  min-width: 90px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid #d7d9e5;
+  background: #f9fafc;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.time-btn.selected {
+  border-color: #0064ff;
+  background: #e7f1ff;
+}
+
+/* Review 박스 */
+.review-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid #e3e4ea;
+  margin-bottom: 16px;
+}
+
+.review-box h2 {
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+.review-box p {
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+.review-box strong {
+  font-weight: 600;
+}
+
+/* Confirm 버튼 영역 */
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.confirm-btn {
+  min-width: 160px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #1f7a1f;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+  transition: 0.15s ease;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: #196319;
+}
+
+.confirm-btn:disabled {
+  background: #a9b7a9;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 반응형 (너무 좁은 화면에서) */
+@media (max-width: 900px) {
+  .booking-container {
+    padding: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid input[type="email"] {
+    grid-column: auto;
+  }
+
+  .selector-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .employee-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .date-time-section {
+    grid-template-columns: 1fr;
+  }
+}
