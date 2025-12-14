@@ -22,13 +22,7 @@ const OrderCreate = ({
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [specialRequest, setSpecialRequest] = useState("");
   const [showSplitBill, setShowSplitBill] = useState(false);
-  const appliedTax = taxes.find(
-  t => t.categoryId === item.categoryId && t.status === "active"
-);
-
-const taxAmount = appliedTax ? item.price * (appliedTax.rate / 100) : 0;
-
-const finalPrice = item.price + taxAmount;
+ 
 
   // 선택된 카테고리의 제품들 필터링
   const filteredMenu = useMemo(() => {
