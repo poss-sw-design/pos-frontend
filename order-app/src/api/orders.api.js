@@ -1,90 +1,63 @@
-// src/api/orders.api.js
-import { request } from "./http";
+import { request } from './client';
 
 export const OrdersAPI = {
-  /**
-   * 1. 주문 생성
-   * POST /api/orders
-   */
-  create(orderPayload) {
-    return request("/api/orders", {
-      method: "POST",
-      body: JSON.stringify(orderPayload),
+  create(data) {
+    return request('/orders', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
     });
   },
 
-  /**
-   * 2. 특정 주문 조회
-   * GET /api/orders/{orderId}
-   */
   getById(orderId) {
-    return request(`/api/orders/${orderId}`);
+    return request(`/orders/${orderId}`);
   },
 
-  /**
-   * 3. 주문 수정
-   * PUT /api/orders/{orderId}
-   */
-  update(orderId, updatePayload) {
-    return request(`/api/orders/${orderId}`, {
-      method: "PUT",
-      body: JSON.stringify(updatePayload),
+  update(orderId, data) {
+    return request(`/orders/${orderId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
     });
   },
 
-  /**
-   * 4. 주문 삭제
-   * DELETE /api/orders/{orderId}
-   */
   remove(orderId) {
-    return request(`/api/orders/${orderId}`, {
-      method: "DELETE",
+    return request(`/orders/${orderId}`, {
+      method: 'DELETE',
     });
   },
 
-  /**
-   * 5. 주문 항목 추가
-   * POST /api/orders/{orderId}/items
-   */
-  addItem(orderId, itemPayload) {
-    return request(`/api/orders/${orderId}/items`, {
-      method: "POST",
-      body: JSON.stringify(itemPayload),
+  addItem(orderId, data) {
+    return request(`/orders/${orderId}/items`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
     });
   },
 
-  /**
-   * 6. 주문 항목 수정
-   * PUT /api/orders/{orderId}/items/{orderItemId}
-   */
-  updateItem(orderId, orderItemId, updatePayload) {
-    return request(
-      `/api/orders/${orderId}/items/${orderItemId}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(updatePayload),
-      }
-    );
+  updateItem(orderId, itemId, data) {
+    return request(`/orders/${orderId}/items/${itemId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    });
   },
 
-  /**
-   * 7. 주문 항목 삭제
-   * DELETE /api/orders/{orderId}/items/{orderItemId}
-   */
-  removeItem(orderId, orderItemId) {
-    return request(
-      `/api/orders/${orderId}/items/${orderItemId}`,
-      {
-        method: "DELETE",
-      }
-    );
+  removeItem(orderId, itemId) {
+    return request(`/orders/${orderId}/items/${itemId}`, {
+      method: 'DELETE',
+    });
   },
 
-  /**
-   * 8. 모든 주문 조회
-   * GET /api/orders
-   */
-  getAll() {
-    return request("/api/orders");
+  getAll(params) {
+    return request('/orders', { params });
+  },
+
+  createWithPayment(data) {
+    return request('/orders/create-with-payment', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    });
   },
 };
