@@ -1,24 +1,32 @@
-import { request } from "./http";
+// src/api/payments.api.js
+import { request } from './client';
 
 export const PaymentsAPI = {
-  create: (data) =>
-    request("/api/payments", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
+  create(data) {
+    return request('/payments', {
+      method: 'POST',
+      body: data,
+    });
+  },
 
-  getAll: () => request("/api/payments"),
+  getAll(params) {
+    return request('/payments', { params });
+  },
 
-  getById: (id) => request(`/api/payments/${id}`),
+  getById(id) {
+    return request(`/payments/${id}`);
+  },
 
-  update: (id, data) =>
-    request(`/api/payments/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }),
+  update(id, data) {
+    return request(`/payments/${id}`, {
+      method: 'PUT',
+      body: data,
+    });
+  },
 
-  remove: (id) =>
-    request(`/api/payments/${id}`, {
-      method: "DELETE",
-    }),
+  remove(id) {
+    return request(`/payments/${id}`, {
+      method: 'DELETE',
+    });
+  },
 };

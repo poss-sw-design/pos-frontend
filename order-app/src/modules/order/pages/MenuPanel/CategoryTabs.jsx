@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 
 const CategoryTabs = ({ categories, selectedCategory, onSelectCategory }) => {
   return (
     <div className="category-tabs">
-      {categories.map((cat) => (
+      {categories.map(cat => (
         <div
-          key={cat}
-          className={`category-tab ${selectedCategory === cat ? "active" : ""}`}
-          onClick={() => onSelectCategory(cat)}
+          key={cat.id}
+          className={`category-tab ${selectedCategory === cat.id ? 'active' : ''}`}
+          onClick={() => onSelectCategory(cat.id)}
         >
-          {cat}
+          {cat.name}
         </div>
       ))}
     </div>

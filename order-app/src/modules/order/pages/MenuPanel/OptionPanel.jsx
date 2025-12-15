@@ -1,46 +1,38 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from 'react';
+
+// extrasList를 컴포넌트 바깥으로 이동하여 매 렌더링마다 재생성 방지
+const extrasList = [
+  { name: 'Whipped Cream', price: 0.5 },
+  { name: 'Chocolate Syrup', price: 0.75 },
+  { name: 'Caramel Drizzle', price: 0.75 },
+];
 
 const OptionPanel = ({ item, onCancel, onAdd }) => {
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState("Medium");
-  const [sugar, setSugar] = useState("None");
+  const [size, setSize] = useState('Medium');
+  const [sugar, setSugar] = useState('None');
   const [extras, setExtras] = useState([]);
 
-  const extrasList = [
-    { name: "Whipped Cream", price: 0.5 },
-    { name: "Chocolate Syrup", price: 0.75 },
-    { name: "Caramel Drizzle", price: 0.75 }
-  ];
+  const toggleExtra = extra => {
+    setExtras(prev => (prev.includes(extra) ? prev.filter(e => e !== extra) : [...prev, extra]));
+  };
 
   // EXTRA PRICE 계산
-  const extraTotal = useMemo(() => {
-    return extrasList
-      .filter(e => extras.includes(e.name))
-      .reduce((sum, e) => sum + e.price, 0);
-  }, [extras]);
+  const extraTotal = extrasList
+    .filter(e => extras.includes(e.name))
+    .reduce((sum, e) => sum + e.price, 0);
 
   // FINAL PRICE 계산
-  const finalPrice = useMemo(() => {
-    return (item.price + extraTotal) * quantity;
-  }, [item.price, extraTotal, quantity]);
-
-  const toggleExtra = (extra) => {
-    setExtras(prev =>
-      prev.includes(extra)
-        ? prev.filter(e => e !== extra)
-        : [...prev, extra]
-    );
-  };
+  const finalPrice = (item.price + extraTotal) * quantity;
 
   return (
     <div className="option-panel">
-
       {/* ITEM HEADER */}
       <div className="option-header">
         <div className="option-img"></div>
 
         <h2>{item.name}</h2>
-        <p className="option-desc">{item.description || ""}</p>
+        <p className="option-desc">{item.description || ''}</p>
 
         <div className="option-price">${item.price.toFixed(2)}</div>
 
@@ -54,10 +46,10 @@ const OptionPanel = ({ item, onCancel, onAdd }) => {
       {/* SIZE SECTION */}
       <h3 className="opt-title">Size</h3>
       <div className="size-options">
-        {["Small", "Medium", "Large"].map((s) => (
+        {['Small', 'Medium', 'Large'].map(s => (
           <div
             key={s}
-            className={`size-card ${size === s ? "active" : ""}`}
+            className={`size-card ${size === s ? 'active' : ''}`}
             onClick={() => setSize(s)}
           >
             <div className="size-img"></div>
@@ -69,10 +61,10 @@ const OptionPanel = ({ item, onCancel, onAdd }) => {
       {/* SUGAR SECTION */}
       <h3 className="opt-title">Sugar</h3>
       <div className="sugar-options">
-        {["None", "Low", "Medium", "High"].map((level) => (
+        {['None', 'Low', 'Medium', 'High'].map(level => (
           <button
             key={level}
-            className={`sugar-btn ${sugar === level ? "active" : ""}`}
+            className={`sugar-btn ${sugar === level ? 'active' : ''}`}
             onClick={() => setSugar(level)}
           >
             {level}
@@ -83,10 +75,10 @@ const OptionPanel = ({ item, onCancel, onAdd }) => {
       {/* EXTRAS SECTION */}
       <h3 className="opt-title">Extras</h3>
       <div className="extras-list">
-        {extrasList.map((ext) => (
+        {extrasList.map(ext => (
           <div
             key={ext.name}
-            className={`extra-item ${extras.includes(ext.name) ? "active" : ""}`}
+            className={`extra-item ${extras.includes(ext.name) ? 'active' : ''}`}
             onClick={() => toggleExtra(ext.name)}
           >
             <div className="extra-img"></div>
@@ -109,13 +101,14 @@ const OptionPanel = ({ item, onCancel, onAdd }) => {
           </div>
         ))}
 
-        {/* 🔥 FIXED: 가격이 옵션 변경 시 즉시 업데이트됨 */}
         <div className="summary-total">Total: ${finalPrice.toFixed(2)}</div>
       </div>
 
       {/* ACTION BUTTONS */}
       <div className="option-actions">
-        <button className="cancel-btn" onClick={onCancel}>Cancel</button>
+        <button className="cancel-btn" onClick={onCancel}>
+          Cancel
+        </button>
 
         <button
           className="add-btn"
@@ -129,14 +122,13 @@ const OptionPanel = ({ item, onCancel, onAdd }) => {
               quantity,
               basePrice: item.price,
               extraPrice: extraTotal,
-              totalPrice: finalPrice
+              totalPrice: finalPrice,
             })
           }
         >
           Add to Cart
         </button>
       </div>
-
     </div>
   );
 };

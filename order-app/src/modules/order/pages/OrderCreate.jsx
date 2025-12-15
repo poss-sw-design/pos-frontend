@@ -1,115 +1,134 @@
-import React, { useState, useMemo } from "react";
-import CategoryTabs from "./MenuPanel/CategoryTabs";
-import MenuGrid from "./MenuPanel/MenuGrid";
-import OptionPanel from "./MenuPanel/OptionPanel";
-import OrderSummary from "./SummaryPanel/OrderSummary";
-import SplitBill from "./SplitBillPanel/SplitBill";
-import "./OrderCreate.css";
+import React, { useState, useMemo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import CategoryTabs from './MenuPanel/CategoryTabs';
+import MenuGrid from './MenuPanel/MenuGrid';
+import OrderSummary from './SummaryPanel/OrderSummary';
+import SplitBill from './SplitBillPanel/SplitBill';
+import { OrdersAPI } from '../../../api/orders.api';
+import './OrderCreate.css';
 
-const OrderCreate = ({ 
-  onBack, 
-  menuItems = [], 
-  categories = [], 
-  taxes = [] 
-}) => {
-
-  // 현재 선택된 카테고리 ID
+const OrderCreate = ({ onBack, menuItems = [], categories = [] }) => {
   const [selectedCategory, setSelectedCategory] = useState(
-    categories[0]?.id || null
+    categories[0]?.id || menuItems[0]?.categoryId || null
   );
-
   const [orderItems, setOrderItems] = useState([]);
-  const [selectedMenu, setSelectedMenu] = useState(null);
-  const [specialRequest, setSpecialRequest] = useState("");
+  const [specialRequest, setSpecialRequest] = useState('');
   const [showSplitBill, setShowSplitBill] = useState(false);
- 
+  const [orderNumber] = useState(() => `ORD-${Date.now()}`);
 
-  // 선택된 카테고리의 제품들 필터링
   const filteredMenu = useMemo(() => {
-    return menuItems.filter((item) => item.categoryId === selectedCategory);
+    if (!selectedCategory) return [];
+    return menuItems.filter(item => item.categoryId === selectedCategory);
   }, [menuItems, selectedCategory]);
 
-  // Split Bill 처리
-  const handleSplitPayment = ({ paidIds }) => {
-    setOrderItems((prev) =>
-      prev.map((item) =>
-        paidIds.includes(item.id)
-          ? { ...item, paid: true }
+  // 메뉴를 orderItems에 추가
+  const addItemToOrder = item => {
+    setOrderItems(prev => {
+      const existing = prev.find(
+        i =>
+          i.productId === item.id &&
+          i.size === item.size &&
+          JSON.stringify(i.extras) === JSON.stringify(item.extras)
+      );
+      if (existing) {
+        return prev.map(i =>
+          i === existing
+            ? {
+                ...i,
+                quantity: (i.quantity || 1) + (item.quantity || 1),
+                totalPrice: ((i.quantity || 1) + (item.quantity || 1)) * Number(i.price || 0),
+              }
+            : i
+        );
+      } else {
+        const finalItem = {
+          id: uuidv4(),
+          productId: item.id,
+          name: item.name,
+          price: Number(item.price || 0),
+          quantity: item.quantity || 1,
+          totalPrice: Number(item.price || 0) * (item.quantity || 1),
+          size: item.size || '',
+          extras: item.extras || [],
+        };
+        return [...prev, finalItem];
+      }
+    });
+  };
+
+  // 수량 증가/감소
+  const handleQuantityChange = (id, delta) => {
+    setOrderItems(prev =>
+      prev.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: Math.max((item.quantity || 1) + delta, 1),
+              totalPrice: Number(item.price || 0) * Math.max((item.quantity || 1) + delta, 1),
+            }
           : item
       )
     );
-    setShowSplitBill(false);
   };
 
-  // 메뉴 옵션 선택 완료 → 세금 적용한 totalPrice 계산 포함
-  const finishOption = (item) => {
-    const taxRule = taxes.find((t) => t.id === item.taxCategoryId);
-    const taxRate = taxRule?.rate || 0;
-
-    const taxAmount = item.price * (taxRate / 100);
-    const finalPrice = item.price + taxAmount;
-
-    const finalItem = {
-      ...item,
-      taxRate,
-      taxAmount,
-      totalPrice: finalPrice,
-    };
-
-    setOrderItems((prev) => [...prev, finalItem]);
-    setSelectedMenu(null);
-  };
-
-  // 총액 계산
-  const subtotal = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
-  const discount = 0; // discount 시스템 추가 시 적용
+  const subtotal = orderItems.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
+  const discount = 0;
   const total = subtotal - discount;
 
-  // Split Bill 화면
+  const handlePayment = async () => {
+    if (orderItems.length === 0) return alert('Order is empty.');
+    try {
+      const payload = {
+        order: { merchantId: 1, employeeId: 1, orderNumber },
+        items: orderItems.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity || 1,
+          unitPrice: Number(item.price || 0),
+        })),
+        discountId: null,
+        payment: { orderId: null, paymentMethod: 'cash', split: false, tipAmount: 0 },
+      };
+      console.log('Sending payload:', payload);
+      await OrdersAPI.createWithPayment(payload);
+      alert(`Payment successful! Order No: ${orderNumber}`);
+      setOrderItems([]);
+      setSpecialRequest('');
+    } catch (err) {
+      console.error(err);
+      alert('Payment failed');
+    }
+  };
+
   if (showSplitBill) {
     return (
       <SplitBill
         orderItems={orderItems}
         onBack={() => setShowSplitBill(false)}
-        onComplete={handleSplitPayment}
+        onComplete={paidIds =>
+          setOrderItems(prev =>
+            prev.map(item => (paidIds.includes(item.id) ? { ...item, paid: true } : item))
+          )
+        }
       />
     );
   }
 
   return (
     <div className="order-container">
-      {/* LEFT SIDE: 메뉴 패널 */}
       <div className="menu-panel">
-        {selectedMenu ? (
-          <OptionPanel
-            item={selectedMenu}
-            onCancel={() => setSelectedMenu(null)}
-            onAdd={finishOption}
-          />
-        ) : (
-          <>
-            <CategoryTabs
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-            />
-
-            <MenuGrid
-              items={filteredMenu}
-              addItemToOrder={(item) => setSelectedMenu(item)}
-            />
-          </>
-        )}
+        <CategoryTabs
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+        <MenuGrid items={filteredMenu} addItemToOrder={addItemToOrder} />
       </div>
 
-      {/* RIGHT SIDE: 요약 패널 */}
       <div className="summary-panel">
-        <div className="order-header">order no. 13567</div>
-
+        <div className="order-header">Order No. {orderNumber}</div>
         <button className="back-button" onClick={onBack}>
           ← Back to Dashboard
         </button>
-
         <OrderSummary
           orderItems={orderItems}
           subtotal={subtotal}
@@ -118,6 +137,8 @@ const OrderCreate = ({
           specialRequest={specialRequest}
           setSpecialRequest={setSpecialRequest}
           onSplitBill={() => setShowSplitBill(true)}
+          onPayment={handlePayment}
+          handleQuantityChange={handleQuantityChange}
         />
       </div>
     </div>

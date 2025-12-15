@@ -1,8 +1,8 @@
-import React from "react";
-import SummaryItem from "./SummaryItem";
-import PriceBreakdown from "./PriceBreakdown";
-import SpecialRequestInput from "./SpecialRequestInput";
-import SummaryActions from "./SummaryActions";
+import React from 'react';
+import SummaryItem from './SummaryItem';
+import PriceBreakdown from './PriceBreakdown';
+import SpecialRequestInput from './SpecialRequestInput';
+import SummaryActions from './SummaryActions';
 
 const OrderSummary = ({
   orderItems,
@@ -11,38 +11,27 @@ const OrderSummary = ({
   total,
   specialRequest,
   setSpecialRequest,
-  onSplitBill
+  onSplitBill,
+  onPayment,
+  handleQuantityChange,
 }) => {
   return (
     <div className="summary-wrapper">
       <h2 className="summary-title">Order Summary</h2>
-
       <button className="cancel-btn">Cancel</button>
 
-      {/* ITEM LIST */}
       <div className="summary-items">
-        {orderItems.map((item, index) => (
-          <SummaryItem key={index} item={item} />
+        {orderItems.map(item => (
+          <SummaryItem key={item.id} item={item} onQuantityChange={handleQuantityChange} />
         ))}
       </div>
 
-      {/* SPACER — pushes bottom section down */}
       <div className="summary-spacer"></div>
 
-      {/* BOTTOM FIXED AREA */}
-      <SpecialRequestInput
-        specialRequest={specialRequest}
-        setSpecialRequest={setSpecialRequest}
-      />
+      <SpecialRequestInput specialRequest={specialRequest} setSpecialRequest={setSpecialRequest} />
 
-<PriceBreakdown 
-  subtotal={subtotal}
-  discount={discount} 
-  total={total}
-/>
-      <SummaryActions onSplitBill={onSplitBill} />
-
-   
+      <PriceBreakdown subtotal={subtotal} discount={discount} total={total} />
+      <SummaryActions onSplitBill={onSplitBill} onPayment={onPayment} />
     </div>
   );
 };
