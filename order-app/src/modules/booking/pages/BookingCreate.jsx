@@ -1,92 +1,149 @@
 import React, { useState, useEffect } from "react";
 import CustomerInfo from "../components/CustomerInfo";
-import ServiceSelector from "../components/ServiceSelector";
 import EmployeeSelector from "../components/EmployeeSelector";
 import DateSelector from "../components/DateSelector";
 import TimeSelector from "../components/TimeSelector";
 import BookingReview from "../components/BookingReview";
 import BookingActions from "../components/BookingActions";
+import { ReservationsAPI } from "../../../api/reservations.api";
 import "./BookingCreate.css";
 
-const BookingCreate = ({ onBack, onConfirm, editing }) => {
+const BookingCreate = ({ onBack, editing }) => {
+  /* ================= STATE ================= */
   const [customer, setCustomer] = useState({
     name: "",
     phone: "",
-    email: "",
   });
 
-  const [service, setService] = useState(null);
+  const [partySize, setPartySize] = useState(2);
   const [employee, setEmployee] = useState(null);
   const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  /* --------------------------------------------
-     If editing = existing booking → preload data
-  --------------------------------------------- */
+  /* ================= EDIT MODE ================= */
   useEffect(() => {
-    if (editing) {
-      setCustomer(editing.customer || {});
-      setService(editing.service || null);
-      setEmployee(editing.employee || null);
-      setDate(editing.date || null);
-      setTime(editing.time || null);
-    }
+    if (!editing) return;
+
+    setCustomer({
+      name: editing.customerName || "",
+      phone: editing.customerPhone || "",
+    });
+
+    setPartySize(editing.partySize || 2);
+    setEmployee(editing.employeeId || null);
+    setDate(editing.reservationDate || null);
+    setStartTime(editing.startTime || null);
+    setEndTime(editing.endTime || null);
   }, [editing]);
 
-  /* --------------------------------------------
-     Confirm handler (create or update)
-  --------------------------------------------- */
-  const handleConfirm = () => {
-    const data = {
-      id: editing ? editing.id : Date.now(),
-      customer,
-      service,
-      employee,
-      date,
-      time,
-      status: editing ? editing.status : "active",
+  /* ================= SUBMIT ================= */
+  const handleConfirm = async () => {
+    const payload = {
+      merchantId: 1,
+      employeeId: employee,
+      customerName: customer.name,
+      customerPhone: customer.phone,
+      partySize,
+      reservationDate: date,
+      startTime,
+      endTime,
     };
 
-    onConfirm(data); // App.jsx 로 전달
+    try {
+      setLoading(true);
+
+      if (editing) {
+        await ReservationsAPI.update(editing.reservationId, {
+          ...payload,
+          status: "confirmed",
+        });
+      } else {
+        await ReservationsAPI.create(payload);
+      }
+
+      onBack();
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save reservation");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  /* ================= UI ================= */
   return (
     <div className="booking-container">
       <button className="back-btn" onClick={onBack}>
         ← Back
       </button>
 
-      <h1>{editing ? "Edit Booking" : "Create Booking"}</h1>
+      <h1>{editing ? "Edit Reservation" : "Create Reservation"}</h1>
 
-      {/* CUSTOMER INFO */}
+      {/* CUSTOMER */}
       <CustomerInfo customer={customer} setCustomer={setCustomer} />
 
-      {/* SERVICE */}
-      <ServiceSelector selected={service} onSelect={setService} />
+      {/* PARTY SIZE */}
+     <div className="customer-info-card">
+  <h3>Party Size</h3>
+
+  <div className="input-row single">
+    <input
+      type="number"
+      min="1"
+      placeholder="Number of guests"
+      value={partySize}
+      onChange={(e) => setPartySize(Number(e.target.value))}
+    />
+  </div>
+</div>
+
 
       {/* EMPLOYEE */}
       <EmployeeSelector selected={employee} onSelect={setEmployee} />
 
-      {/* DATE + TIME */}
+      {/* DATE */}
+      <DateSelector date={date} onSelect={setDate} />
+
+      {/* TIME RANGE */}
       <div className="date-time-section">
-        <DateSelector date={date} onSelect={setDate} />
-        <TimeSelector date={date} selected={time} onSelect={setTime} />
+        <TimeSelector
+          label="Start Time"
+          date={date}
+          selected={startTime}
+          onSelect={setStartTime}
+        />
+        <TimeSelector
+          label="End Time"
+          date={date}
+          selected={endTime}
+          onSelect={setEndTime}
+        />
       </div>
 
       {/* REVIEW */}
       <BookingReview
         customer={customer}
-        service={service}
+        partySize={partySize}
         employee={employee}
         date={date}
-        time={time}
+        startTime={startTime}
+        endTime={endTime}
       />
 
-      {/* ACTION BUTTONS */}
+      {/* ACTIONS */}
       <BookingActions
-        disabled={!customer.name || !service || !date || !time}
+        disabled={
+          loading ||
+          !customer.name ||
+          !customer.phone ||
+          !date ||
+          !startTime ||
+          !endTime
+        }
         onConfirm={handleConfirm}
-        label={editing ? "Update Booking" : "Confirm Booking"}
+        label={editing ? "Update Reservation" : "Confirm Reservation"}
       />
     </div>
   );
