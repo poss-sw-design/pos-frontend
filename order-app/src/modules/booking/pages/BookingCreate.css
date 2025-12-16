@@ -292,3 +292,18 @@
     grid-template-columns: 1fr;
   }
 }
+/* Party Size input - match customer input style */
+.form-section input[type="number"] {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  font-size: 15px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.form-section input[type="number"]:focus {
+  outline: none;
+  border-color: #0064ff;
+}
