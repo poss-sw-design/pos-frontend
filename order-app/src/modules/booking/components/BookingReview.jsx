@@ -1,14 +1,17 @@
-import React from "react";
+import React from 'react';
 
-const BookingReview = ({ customer, service, employee, date, time }) => {
+const BookingReview = ({ customer, partySize, date, startTime, endTime }) => {
   return (
-    <div className="review-box">
-      <h2>Review Appointment</h2>
-
-      <p><strong>Customer:</strong> {customer.name || "-"}</p>
-      <p><strong>Service:</strong> {service?.name || "-"}</p>
-      <p><strong>Employee:</strong> {employee?.name || "-"}</p>
-      <p><strong>Date & Time:</strong> {date ? date.toDateString() : "-"} {time || ""}</p>
+    <div className="booking-review">
+      <h3>Reservation Summary</h3>
+      <p>
+        Customer: {customer.name} ({customer.phone})
+      </p>
+      <p>Party Size: {partySize}</p>
+      <p>Date: {date instanceof Date ? date.toDateString() : date}</p>
+      <p>
+        Time: {startTime} - {endTime || 'Not specified'}
+      </p>
     </div>
   );
 };
