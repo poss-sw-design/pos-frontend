@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const MenuCard = ({ item, addItemToOrder }) => {
   return (
@@ -8,7 +8,16 @@ const MenuCard = ({ item, addItemToOrder }) => {
       <div className="menu-card-title">{item.name}</div>
       <div className="menu-card-price">${item.price.toFixed(2)}</div>
 
-      <button onClick={() => addItemToOrder(item)}>Add</button>
+      <button
+        onClick={() =>
+          addItemToOrder({
+            ...item, // API에서 받은 taxRateValue 포함
+            quantity: 1,
+          })
+        }
+      >
+        Add
+      </button>
     </div>
   );
 };

@@ -1,146 +1,161 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import CategoryTabs from './MenuPanel/CategoryTabs';
-import MenuGrid from './MenuPanel/MenuGrid';
 import OrderSummary from './SummaryPanel/OrderSummary';
-import SplitBill from './SplitBillPanel/SplitBill';
 import { OrdersAPI } from '../../../api/orders.api';
+import { OrderPaymentAPI } from '../../../api/orderPayment.api';
 import './OrderCreate.css';
 
-const OrderCreate = ({ onBack, menuItems = [], categories = [] }) => {
-  const [selectedCategory, setSelectedCategory] = useState(
-    categories[0]?.id || menuItems[0]?.categoryId || null
-  );
+const OrderCreate = ({ onBack, menuItems = [] }) => {
   const [orderItems, setOrderItems] = useState([]);
   const [specialRequest, setSpecialRequest] = useState('');
-  const [showSplitBill, setShowSplitBill] = useState(false);
-  const [orderNumber] = useState(() => `ORD-${Date.now()}`);
+  const [orderNumber] = useState(() => `ORD-${uuidv4()}`);
 
-  const filteredMenu = useMemo(() => {
-    if (!selectedCategory) return [];
-    return menuItems.filter(item => item.categoryId === selectedCategory);
-  }, [menuItems, selectedCategory]);
+  const [activeCategory, setActiveCategory] = useState('');
 
-  // 메뉴를 orderItems에 추가
   const addItemToOrder = item => {
     setOrderItems(prev => {
-      const existing = prev.find(
-        i =>
-          i.productId === item.id &&
-          i.size === item.size &&
-          JSON.stringify(i.extras) === JSON.stringify(item.extras)
-      );
-      if (existing) {
-        return prev.map(i =>
-          i === existing
-            ? {
-                ...i,
-                quantity: (i.quantity || 1) + (item.quantity || 1),
-                totalPrice: ((i.quantity || 1) + (item.quantity || 1)) * Number(i.price || 0),
-              }
-            : i
-        );
-      } else {
-        const finalItem = {
-          id: uuidv4(),
+      const found = prev.find(i => i.productId === item.id);
+      if (found) {
+        return prev.map(i => (i.productId === item.id ? { ...i, quantity: i.quantity + 1 } : i));
+      }
+      return [
+        ...prev,
+        {
+          id: Date.now(),
+          orderItemId: Date.now(),
           productId: item.id,
           name: item.name,
-          price: Number(item.price || 0),
-          quantity: item.quantity || 1,
-          totalPrice: Number(item.price || 0) * (item.quantity || 1),
-          size: item.size || '',
-          extras: item.extras || [],
-        };
-        return [...prev, finalItem];
-      }
+          unitPrice: parseFloat(item.price),
+          quantity: 1,
+          taxRate: parseFloat(item.taxRate ?? 0.1),
+        },
+      ];
     });
   };
 
-  // 수량 증가/감소
-  const handleQuantityChange = (id, delta) => {
+  const handleQuantityChange = (productId, delta) => {
     setOrderItems(prev =>
       prev.map(item =>
-        item.id === id
-          ? {
-              ...item,
-              quantity: Math.max((item.quantity || 1) + delta, 1),
-              totalPrice: Number(item.price || 0) * Math.max((item.quantity || 1) + delta, 1),
-            }
+        item.productId === productId
+          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
           : item
       )
     );
   };
 
-  const subtotal = orderItems.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
-  const discount = 0;
-  const total = subtotal - discount;
+  const subtotal = orderItems.reduce(
+    (sum, i) => sum + parseFloat(i.unitPrice) * parseInt(i.quantity),
+    0
+  );
+  const taxAmount = orderItems.reduce(
+    (sum, i) => sum + parseFloat(i.unitPrice) * parseInt(i.quantity) * (parseFloat(i.taxRate) || 0),
+    0
+  );
+  const total = subtotal + taxAmount;
 
   const handlePayment = async () => {
-    if (orderItems.length === 0) return alert('Order is empty.');
     try {
-      const payload = {
-        order: { merchantId: 1, employeeId: 1, orderNumber },
-        items: orderItems.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity || 1,
-          unitPrice: Number(item.price || 0),
+      if (orderItems.length === 0) {
+        alert('Cannot pay empty order. Please add items first.');
+        return;
+      }
+
+      const orderRes = await OrdersAPI.create({
+        merchantId: 1,
+        employeeId: 1,
+        orderNumber,
+        specialRequests: specialRequest,
+        items: orderItems.map(i => ({
+          productId: i.productId,
+          quantity: i.quantity,
         })),
-        discountId: null,
-        payment: { orderId: null, paymentMethod: 'cash', split: false, tipAmount: 0 },
-      };
-      console.log('Sending payload:', payload);
-      await OrdersAPI.createWithPayment(payload);
-      alert(`Payment successful! Order No: ${orderNumber}`);
+      });
+
+      const orderData = orderRes.data || orderRes;
+
+      await OrderPaymentAPI.pay(orderData.orderId, {
+        orderId: orderData.orderId,
+        paymentMethod: 'cash',
+        split: true,
+        tipAmount: 0,
+      });
+
+      alert('Payment completed');
       setOrderItems([]);
       setSpecialRequest('');
-    } catch (err) {
-      console.error(err);
-      alert('Payment failed');
+    } catch (e) {
+      console.error('Payment failed:', e);
+      alert('Payment failed: ' + (e.message || JSON.stringify(e)));
     }
   };
 
-  if (showSplitBill) {
-    return (
-      <SplitBill
-        orderItems={orderItems}
-        onBack={() => setShowSplitBill(false)}
-        onComplete={paidIds =>
-          setOrderItems(prev =>
-            prev.map(item => (paidIds.includes(item.id) ? { ...item, paid: true } : item))
-          )
-        }
-      />
-    );
-  }
+  // 카테고리 목록
+  const categories = [...new Set(menuItems.map(item => item.category).filter(Boolean))];
+
+  // 카테고리 필터 적용, 없으면 전체 메뉴
+  const filteredItems =
+    activeCategory && categories.includes(activeCategory)
+      ? menuItems.filter(item => item.category === activeCategory)
+      : menuItems;
 
   return (
     <div className="order-container">
       <div className="menu-panel">
-        <CategoryTabs
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
-        <MenuGrid items={filteredMenu} addItemToOrder={addItemToOrder} />
+        {/* 카테고리 탭 */}
+        {categories.length > 0 && (
+          <div className="category-tabs">
+            {categories.map(cat => (
+              <div
+                key={cat}
+                className={`category-tab ${activeCategory === cat ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+              </div>
+            ))}
+            <div
+              className={`category-tab ${activeCategory === '' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('')}
+            >
+              All
+            </div>
+          </div>
+        )}
+
+        {/* 메뉴 그리드 */}
+        <div className="menu-grid">
+          {filteredItems.map(item => (
+            <div key={item.id} className="menu-card">
+              <div className="menu-img" />
+              <div className="menu-card-title">{item.name}</div>
+              <div className="menu-card-price">${item.price}</div>
+              <button onClick={() => addItemToOrder(item)}>Add</button>
+            </div>
+          ))}
+        </div>
+
+        {filteredItems.length === 0 && (
+          <div style={{ marginTop: 20, color: '#888', textAlign: 'center' }}>
+            No items in this category.
+          </div>
+        )}
       </div>
 
-      <div className="summary-panel">
-        <div className="order-header">Order No. {orderNumber}</div>
-        <button className="back-button" onClick={onBack}>
-          ← Back to Dashboard
-        </button>
-        <OrderSummary
-          orderItems={orderItems}
-          subtotal={subtotal}
-          discount={discount}
-          total={total}
-          specialRequest={specialRequest}
-          setSpecialRequest={setSpecialRequest}
-          onSplitBill={() => setShowSplitBill(true)}
-          onPayment={handlePayment}
-          handleQuantityChange={handleQuantityChange}
-        />
-      </div>
+      <OrderSummary
+        orderItems={orderItems}
+        subtotal={subtotal}
+        taxAmount={taxAmount}
+        total={total}
+        discount={0}
+        specialRequest={specialRequest}
+        setSpecialRequest={setSpecialRequest}
+        onPayment={handlePayment}
+        handleQuantityChange={handleQuantityChange}
+      />
+
+      <button className="back-button" onClick={onBack}>
+        Back
+      </button>
     </div>
   );
 };
