@@ -8,64 +8,80 @@
   box-sizing: border-box;
 }
 
-/* LEFT PANEL */
+/* LEFT PANEL - 메뉴 패널 개선 */
 .menu-panel {
   flex: 1;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e6e6e6;
+  transition: transform 0.2s;
+
+  max-height: 80vh; /* 화면의 80%만 높이 허용 */
+  overflow-y: auto; /* 넘치면 세로 스크롤 */
 }
 
-/* CATEGORY TABS */
-.category-tabs {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+.menu-panel:hover {
+  transform: translateY(-4px);
 }
 
+/* CATEGORY TABS 개선 */
 .category-tab {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: #b5b5b5;
+  color: #888;
   cursor: pointer;
-  padding: 6px 0;
-  transition: 0.2s;
+  padding: 8px 0;
+  transition: all 0.2s;
 }
 
 .category-tab.active {
   color: #0064ff;
   border-bottom: 3px solid #0064ff;
+  font-weight: 700;
 }
 
-/* MENU GRID */
+/* MENU GRID 개선 */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 2개씩 */
   gap: 20px;
 }
 
-/* MENU CARD */
+/* MENU CARD 개선 */
 .menu-card {
-  background: white;
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
   padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .menu-img {
   width: 100%;
-  height: 90px;
-  background: #d9d9d9;
-  border-radius: 12px;
-  margin-bottom: 10px;
+  height: 100px;
+  background: #e0e0e0;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.menu-card:hover .menu-img {
+  transform: scale(1.05);
 }
 
 .menu-card-title {
   font-weight: 700;
   font-size: 16px;
+  margin-bottom: 4px;
 }
 
 .menu-card-price {
@@ -76,18 +92,20 @@
 
 .menu-card button {
   width: 100%;
-  background: #0064ff;
+  background: linear-gradient(90deg, #3165ff, #4a80ff);
   color: white;
   border: none;
   padding: 10px 0;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
   transition: 0.2s;
 }
 
 .menu-card button:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 /* RIGHT PANEL */
@@ -122,13 +140,22 @@
 
 /* SUMMARY ITEM */
 .summary-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr; /* 이름:수량:가격 비율 */
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
 }
 
 .summary-item-name {
   font-weight: 700;
+  padding-right: 8px;
+}
+
+.summary-item-qty,
+.summary-item-price {
+  text-align: right;
+  font-weight: 600;
 }
 
 .summary-item-option {
@@ -179,6 +206,23 @@
   display: flex;
   gap: 12px;
   margin-top: 24px;
+}
+
+.special-request {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.special-request input {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 .action-btn {
@@ -440,4 +484,3 @@
 .back-button:hover {
   background: #d0d0d0;
 }
-

@@ -1,4 +1,3 @@
-// src/api/products.api.js
 import { request } from './client';
 
 export const ProductsAPI = {
@@ -16,7 +15,10 @@ export const ProductsAPI = {
   create(data) {
     return request('/products', {
       method: 'POST',
-      body: data,
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   },
 
@@ -24,7 +26,10 @@ export const ProductsAPI = {
   update(productId, data) {
     return request(`/products/${productId}`, {
       method: 'PATCH',
-      body: data,
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   },
 

@@ -1,21 +1,27 @@
-import React from "react";
+import React from 'react';
 
-const PriceBreakdown = ({ subtotal, discount, total }) => {
+const PriceBreakdown = ({ subtotal, taxAmount, discount, total }) => {
+  const format = num => Number(num || 0).toFixed(2);
+
   return (
     <div className="price-breakdown">
-      <div>
+      <div className="breakdown-row">
         <span>Subtotal</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span>${format(subtotal)}</span>
       </div>
-
-      <div>
-        <span>Discount</span>
-        <span>-${discount.toFixed(2)}</span>
+      <div className="breakdown-row">
+        <span>Tax</span>
+        <span>${format(taxAmount)}</span>
       </div>
-
+      {discount > 0 && (
+        <div className="breakdown-row">
+          <span>Discount</span>
+          <span>-${format(discount)}</span>
+        </div>
+      )}
       <div className="total-amount">
         <span>Total Amount</span>
-        <span>${total.toFixed(2)}</span>
+        <span>${format(total)}</span>
       </div>
     </div>
   );
