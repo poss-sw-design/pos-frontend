@@ -1,6 +1,6 @@
 .reservation-container {
   padding: 30px;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .reservation-header {
@@ -35,7 +35,12 @@
 .reservation-table tr {
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.cancelled {
+  text-decoration: line-through;
+  opacity: 0.6;
 }
 
 .reservation-table td {

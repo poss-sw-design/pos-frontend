@@ -16,7 +16,8 @@ export const ReservationsAPI = {
   create(data) {
     return request('/reservations', {
       method: 'POST',
-      body: data,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data), // 객체를 JSON 문자열로 변환
     });
   },
 
@@ -24,7 +25,8 @@ export const ReservationsAPI = {
   update(reservationId, data) {
     return request(`/reservations/${reservationId}`, {
       method: 'PUT',
-      body: data,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data), // 객체를 JSON 문자열로 변환
     });
   },
 

@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from "react";
-import CustomerInfo from "../components/CustomerInfo";
-import EmployeeSelector from "../components/EmployeeSelector";
-import DateSelector from "../components/DateSelector";
-import TimeSelector from "../components/TimeSelector";
-import BookingReview from "../components/BookingReview";
-import BookingActions from "../components/BookingActions";
-import { ReservationsAPI } from "../../../api/reservations.api";
-import "./BookingCreate.css";
+import React, { useState, useEffect } from 'react';
+import CustomerInfo from '../components/CustomerInfo';
+import BookingReview from '../components/BookingReview';
+import BookingActions from '../components/BookingActions';
+import { ReservationsAPI } from '../../../api/reservations.api';
+import './BookingCreate.css';
 
 const BookingCreate = ({ onBack, editing }) => {
   /* ================= STATE ================= */
-  const [customer, setCustomer] = useState({
-    name: "",
-    phone: "",
-  });
-
+  const [customer, setCustomer] = useState({ name: '', phone: '' });
   const [partySize, setPartySize] = useState(2);
-  const [employee, setEmployee] = useState(null);
-  const [date, setDate] = useState(null);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [loading, setLoading] = useState(false);
 
   /* ================= EDIT MODE ================= */
@@ -27,26 +19,24 @@ const BookingCreate = ({ onBack, editing }) => {
     if (!editing) return;
 
     setCustomer({
-      name: editing.customerName || "",
-      phone: editing.customerPhone || "",
+      name: editing.customerName || '',
+      phone: editing.customerPhone || '',
     });
-
     setPartySize(editing.partySize || 2);
-    setEmployee(editing.employeeId || null);
-    setDate(editing.reservationDate || null);
-    setStartTime(editing.startTime || null);
-    setEndTime(editing.endTime || null);
+    setDate(editing.reservationDate ? new Date(editing.reservationDate) : new Date());
+    setStartTime(editing.startTime || '');
+    setEndTime(editing.endTime || '');
   }, [editing]);
 
   /* ================= SUBMIT ================= */
   const handleConfirm = async () => {
     const payload = {
       merchantId: 1,
-      employeeId: employee,
+      employeeId: 1, // 고정값
       customerName: customer.name,
       customerPhone: customer.phone,
       partySize,
-      reservationDate: date,
+      reservationDate: date.toISOString().split('T')[0],
       startTime,
       endTime,
     };
@@ -55,10 +45,7 @@ const BookingCreate = ({ onBack, editing }) => {
       setLoading(true);
 
       if (editing) {
-        await ReservationsAPI.update(editing.reservationId, {
-          ...payload,
-          status: "confirmed",
-        });
+        await ReservationsAPI.update(editing.reservationId, payload);
       } else {
         await ReservationsAPI.create(payload);
       }
@@ -66,67 +53,65 @@ const BookingCreate = ({ onBack, editing }) => {
       onBack();
     } catch (e) {
       console.error(e);
-      alert("Failed to save reservation");
+      alert('Failed to save reservation');
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= UI ================= */
+  /* ================= DATE / TIME ================= */
+  const today = new Date();
+  const maxDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const minDate = today.toISOString().split('T')[0];
+
   return (
     <div className="booking-container">
       <button className="back-btn" onClick={onBack}>
         ← Back
       </button>
 
-      <h1>{editing ? "Edit Reservation" : "Create Reservation"}</h1>
+      <h1>{editing ? 'Edit Reservation' : 'Create Reservation'}</h1>
 
-      {/* CUSTOMER */}
+      {/* CUSTOMER INFO */}
       <CustomerInfo customer={customer} setCustomer={setCustomer} />
 
       {/* PARTY SIZE */}
-     <div className="customer-info-card">
-  <h3>Party Size</h3>
-
-  <div className="input-row single">
-    <input
-      type="number"
-      min="1"
-      placeholder="Number of guests"
-      value={partySize}
-      onChange={(e) => setPartySize(Number(e.target.value))}
-    />
-  </div>
-</div>
-
-
-      {/* EMPLOYEE */}
-      <EmployeeSelector selected={employee} onSelect={setEmployee} />
-
-      {/* DATE */}
-      <DateSelector date={date} onSelect={setDate} />
-
-      {/* TIME RANGE */}
-      <div className="date-time-section">
-        <TimeSelector
-          label="Start Time"
-          date={date}
-          selected={startTime}
-          onSelect={setStartTime}
+      <div className="customer-info-card">
+        <h3>Party Size</h3>
+        <input
+          type="number"
+          min="1"
+          value={partySize}
+          onChange={e => setPartySize(Number(e.target.value))}
         />
-        <TimeSelector
-          label="End Time"
-          date={date}
-          selected={endTime}
-          onSelect={setEndTime}
+      </div>
+
+      {/* DATE SELECTOR */}
+      <div className="customer-info-card">
+        <h3>Reservation Date</h3>
+        <input
+          type="date"
+          value={date.toISOString().split('T')[0]}
+          min={minDate}
+          max={maxDate}
+          onChange={e => setDate(new Date(e.target.value))}
         />
+      </div>
+
+      {/* TIME SELECTOR */}
+      <div className="customer-info-card">
+        <h3>Start Time</h3>
+        <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
+      </div>
+      <div className="customer-info-card">
+        <h3>End Time</h3>
+        <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
       </div>
 
       {/* REVIEW */}
       <BookingReview
         customer={customer}
         partySize={partySize}
-        employee={employee}
         date={date}
         startTime={startTime}
         endTime={endTime}
@@ -134,16 +119,9 @@ const BookingCreate = ({ onBack, editing }) => {
 
       {/* ACTIONS */}
       <BookingActions
-        disabled={
-          loading ||
-          !customer.name ||
-          !customer.phone ||
-          !date ||
-          !startTime ||
-          !endTime
-        }
+        disabled={loading || !customer.name || !customer.phone || !date || !startTime}
         onConfirm={handleConfirm}
-        label={editing ? "Update Reservation" : "Confirm Reservation"}
+        label={editing ? 'Update Reservation' : 'Confirm Reservation'}
       />
     </div>
   );
